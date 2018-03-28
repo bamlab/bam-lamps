@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("superagent");
+const localtunnel = require("localtunnel");
 
 const hue = require("node-hue-api");
 const HueApi = hue.HueApi;
@@ -36,7 +37,20 @@ const failureState = lightState
   .bri(230);
 
 const app = express();
+
+const subdomain = process.env.SUBDOMAIN;
+
 app.set("port", process.env.PORT || 8000);
+const tunnel = localtunnel(
+  app.get("port"),
+  { subdomain: subdomain },
+  (err, tunnel) => {
+    if (err) {
+      console.error(err);
+    }
+    console.log("Tunnel launched on the URL: ", tunnel.url);
+  }
+);
 
 app.use(bodyParser.json());
 
