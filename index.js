@@ -7,13 +7,13 @@ const hue = require("node-hue-api");
 const HueApi = hue.HueApi;
 const lightState = hue.lightState;
 
-const displayResult = function(result) {
+const displayResult = function (result) {
   console.log(JSON.stringify(result, null, 2));
 };
 
 const greenHueColor = 30000;
 
-const host = "192.168.102.244";
+const host = "192.168.102.22";
 const username = "KL3373i5toa0QQaoi273VOotxTGLCHmtGYbgGQpx";
 const api = new HueApi(host, username);
 const normalState = lightState
@@ -68,17 +68,6 @@ app.get("/failure", (req, res) => {
     .then(() => res.send("OK"));
 });
 
-app.listen(app.get("port"), function() {
+app.listen(app.get("port"), function () {
   console.log("Node app is running on port", app.get("port"));
 });
-
-const tunnel = localtunnel(
-  app.get("port"),
-  { subdomain: subdomain },
-  (err, tunnel) => {
-    if (err) {
-      console.error(err);
-    }
-    console.log("Tunnel launched on the URL: ", tunnel.url);
-  }
-);
