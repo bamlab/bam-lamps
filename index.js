@@ -41,16 +41,6 @@ const app = express();
 const subdomain = process.env.SUBDOMAIN;
 
 app.set("port", process.env.PORT || 8000);
-const tunnel = localtunnel(
-  app.get("port"),
-  { subdomain: subdomain },
-  (err, tunnel) => {
-    if (err) {
-      console.error(err);
-    }
-    console.log("Tunnel launched on the URL: ", tunnel.url);
-  }
-);
 
 app.use(bodyParser.json());
 
@@ -62,7 +52,8 @@ app.get("/success", (req, res) => {
     })
     .then(() => {
       return api.setLightState(1, normalState);
-    });
+    })
+    .then(() => res.send("OK"));
 });
 
 app.get("/failure", (req, res) => {
@@ -73,9 +64,21 @@ app.get("/failure", (req, res) => {
     })
     .then(() => {
       return api.setLightState(1, normalState);
-    });
+    })
+    .then(() => res.send("OK"));
 });
 
 app.listen(app.get("port"), function() {
   console.log("Node app is running on port", app.get("port"));
 });
+
+const tunnel = localtunnel(
+  app.get("port"),
+  { subdomain: subdomain },
+  (err, tunnel) => {
+    if (err) {
+      console.error(err);
+    }
+    console.log("Tunnel launched on the URL: ", tunnel.url);
+  }
+);
